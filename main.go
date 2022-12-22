@@ -74,6 +74,8 @@ func main() {
 		return
 	}
 	printJson(string(headerAsBytes))
+	fmt.Println("#")
 	printJson(string(payloadAsBytes))
+	fmt.Println("#")
 	fmt.Println(signature)
 }
