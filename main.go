@@ -21,11 +21,7 @@ Flags:
 	os.Exit(1)
 }
 
-func printJson(str string, pretty bool) {
-	if !pretty {
-		fmt.Println(str)
-		return
-	}
+func printJson(str string) {
 	var buf bytes.Buffer
 	err := json.Indent(&buf, []byte(str), "", "  ")
 	if err != nil {
@@ -37,7 +33,6 @@ func printJson(str string, pretty bool) {
 
 func main() {
 	help := flag.Bool("h", false, "print help")
-	pretty := flag.Bool("p", false, "pretty")
 	flag.Parse()
 	if *help {
 		printUsage()
@@ -78,7 +73,7 @@ func main() {
 		os.Exit(1)
 		return
 	}
-	printJson(string(headerAsBytes), *pretty)
-	printJson(string(payloadAsBytes), *pretty)
+	printJson(string(headerAsBytes))
+	printJson(string(payloadAsBytes))
 	fmt.Println(signature)
 }
