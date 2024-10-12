@@ -1,3 +1,3 @@
-module github.com/t-hg/jwt-decode
+module github.com/tobiashort/jwt-decode
 
 go 1.19
