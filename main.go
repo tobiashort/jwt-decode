@@ -1,14 +1,13 @@
 package main
 
 import (
-	"bytes"
-	"encoding/base64"
-	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
 	"os"
 	"strings"
+
+	"github.com/tobiashort/jwt-decode/jwt"
 )
 
 func printUsage() {
@@ -19,16 +18,6 @@ Flags:
 `)
 	flag.PrintDefaults()
 	os.Exit(1)
-}
-
-func printJson(str string) {
-	var buf bytes.Buffer
-	err := json.Indent(&buf, []byte(str), "", "  ")
-	if err != nil {
-		fmt.Println(str)
-		return
-	}
-	fmt.Println(buf.String())
 }
 
 func main() {
@@ -52,30 +41,9 @@ func main() {
 		}
 		input = strings.TrimSpace(string(data))
 	}
-	parts := strings.Split(input, ".")
-	if len(parts) != 3 {
-		fmt.Fprintln(os.Stderr, "invalid format:", input)
-		os.Exit(1)
-		return
-	}
-	encodedHeader := parts[0]
-	encodedPayload := parts[1]
-	signature := parts[2]
-	headerAsBytes, err := base64.RawURLEncoding.DecodeString(encodedHeader)
+	decoded, err := jwt.Decode(input)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "header:", encodedHeader, err)
-		os.Exit(1)
-		return
+		panic(err)
 	}
-	payloadAsBytes, err := base64.RawURLEncoding.DecodeString(encodedPayload)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "payload:", encodedPayload, err)
-		os.Exit(1)
-		return
-	}
-	printJson(string(headerAsBytes))
-	fmt.Println("#")
-	printJson(string(payloadAsBytes))
-	fmt.Println("#")
-	fmt.Println(signature)
+	fmt.Println(decoded)
 }
